@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم الأدمن - نظام تقصير الروابط</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="admin-header">
+            <h1>👨‍💼 لوحة تحكم الأدمن</h1>
+            <nav class="admin-nav">
+                <button class="nav-btn active" onclick="showSection('create')">➕ إنشاء رابط</button>
+                <button class="nav-btn" onclick="showSection('manage')">📊 إدارة الروابط</button>
+                <button class="nav-btn" onclick="showSection('stats')">📈 الإحصائيات</button>
+                <a href="/" class="nav-btn">🏠 الرئيسية</a>
+            </nav>
+        </header>
+<!-- قسم إنشاء رابط جديد -->
+        <div id="create-section" class="admin-section">
+            <div class="section-card">
+                <h2>➕ إنشاء رابط مختصر جديد</h2>
+                
+                <form id="create-form">
+                    <div class="form-group">
+                        <label for="original-url">🔗 الرابط الأصلي:</label>
+                        <input type="url" id="original-url" placeholder="https://example.com/very/long/url" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="custom-code">🎯 كود مخصص (اختياري):</label>
+                        <input type="text" id="custom-code" placeholder="my-link" pattern="[a-zA-Z0-9-_]+">
+                        <small>يمكن ترك هذا فارغاً لإنتاج كود عشوائي</small>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">🚀 إنشاء الرابط</button>
+                </form>
+
+                <div id="create-result" class="result-card" style="display: none;">
+                    <h3>✅ تم إنشاء الرابط بنجاح!</h3>
+                    <div class="result-url">
+                        <label>الرابط المختصر:</label>
+                        <div class="url-display" id="new-short-url"></div>
+                        <button class="btn btn-copy" onclick="copyUrl()">📋 نسخ</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- قسم إدارة الروابط -->
+        <div id="manage-section" class="admin-section" style="display: none;">
+            <div class="section-card">
+                <h2>📊 إدارة الروابط</h2>
+                
+                <div class="search-bar">
+                    <input type="text" id="search-input" placeholder="🔍 البحث في الروابط...">
+                    <button class="btn btn-secondary" onclick="loadUrls()">🔄 تحديث</button>
+                </div>
+
+                <div class="urls-table">
+                    <div class="table-header">
+                        <div class="col">الرابط المختصر</div>
+                        <div class="col">الرابط الأصلي</div>
+                        <div class="col">النقرات</div>
+                        <div class="col">تاريخ الإنشاء</div>
+                        <div class="col">الإجراءات</div>
+                    </div>
+                    <div id="urls-list" class="table-body">
+                        <div class="loading">⏳ جاري تحميل الروابط...</div>
+                    </div>
+                </div>
+
+                <div class="pagination" id="pagination">
+                    <!-- سيتم ملؤها بـ JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- قسم الإحصائيات -->
+        <div id="stats-section" class="admin-section" style="display: none;">
+            <div class="section-card">
+                <h2>📈 الإحصائيات العامة</h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-urls">-</div>
+                        <div class="stat-label">إجمالي الروابط</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-clicks">-</div>
+                        <div class="stat-label">إجمالي النقرات</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="today-urls">-</div>
+                        <div class="stat-label">روابط اليوم</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="avg-clicks">-</div>
+                        <div class="stat-label">متوسط النقرات</div>
+                    </div>
+                </div>
+
+                <div class="top-urls">
+                    <h3>🔥 أكثر الروابط نقراً</h3>
+                    <div id="top-urls-list">
+                        <!-- سيتم ملؤها بـ JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+<!-- تنبيهات -->
+        <div id="alert-container"></div>
+    </div>
+
+    <script src="shared.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

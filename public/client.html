@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة العميل - نظام تقصير الروابط</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="client-header">
+            <h1>👤 لوحة العميل</h1>
+            <p class="subtitle">امسح QR Code لتعديل أو إنشاء روابط مختصرة</p>
+            <a href="/" class="btn btn-secondary">🏠 الرئيسية</a>
+        </header>
+
+        <!-- عداد المحاولات -->
+        <div class="attempts-counter">
+            <div class="attempts-info">
+                <span>المحاولات المتبقية: </span>
+                <strong id="remaining-attempts">10</strong>
+                <span>من أصل 10</span>
+            </div>
+            <div class="reset-timer">
+                <span>إعادة التعيين خلال: </span>
+                <strong id="reset-timer">--:--:--</strong>
+            </div>
+        </div>
+
+        <div class="client-main">
+            <!-- قسم مسح QR Code -->
+            <div class="scanner-section">
+                <h2>📱 مسح QR Code</h2>
+                
+                <div class="scanner-controls">
+                    <button id="start-scan-btn" class="btn btn-primary" onclick="startScanner()">
+                        📷 بدء المسح
+                    </button>
+                    <button id="stop-scan-btn" class="btn btn-danger" onclick="stopScanner()" style="display: none;">
+                        🛑 إيقاف المسح
+                    </button>
+                </div>
+
+                <div id="scanner-container" style="display: none;">
+                    <video id="scanner-video" autoplay muted></video>
+                    <div class="scanner-overlay">
+                        <div class="scanner-frame"></div>
+                    </div>
+                </div>
+
+                <div class="manual-input">
+                    <label>أو أدخل الرابط المختصر يدوياً:</label>
+                    <div class="input-with-button">
+                        <input type="url" id="manual-url" placeholder="https://yoursite.com/abc123">
+                        <button class="btn btn-secondary" onclick="loadManualUrl()">📥 تحميل</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- قسم المعلومات والتعديل -->
+            <div class="action-section">
+                <form id="client-form">
+                    <div class="form-group">
+                        <label for="scanned-url">🔗 الرابط المختصر المكتشف:</label>
+                        <input type="text" id="scanned-url" readonly placeholder="سيظهر هنا بعد المسح...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="target-url">🎯 الرابط الهدف الجديد:</label>
+                        <input type="url" id="target-url" placeholder="https://example.com/new-destination" required>
+                        <small>أدخل الرابط الذي تريد التوجه إليه</small>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button type="button" id="edit-btn" class="btn btn-warning" onclick="editUrl()">
+                            ✏️ تعديل الرابط
+                        </button>
+                        <button type="button" id="activate-btn" class="btn btn-success" onclick="activateUrl()">
+                            ⚡️ تفعيل رابط جديد
+                        </button>
+                    </div>
+                </form>
+<!-- نتيجة العملية -->
+                <div id="operation-result" class="result-section" style="display: none;">
+                    <div class="result-content">
+                        <div class="result-icon">✅</div>
+                        <div class="result-text">
+                            <h3 id="result-title">تمت العملية بنجاح!</h3>
+                            <p id="result-message">تم تحديث الرابط كما طلبت.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- تنبيهات -->
+        <div id="alert-container"></div>
+
+        <!-- معلومات إضافية -->
+        <div class="info-section">
+            <h3>💡 كيفية الاستخدام:</h3>
+            <ol>
+                <li>اضغط "بدء المسح" لتفعيل الكاميرا</li>
+                <li>وجه الكاميرا نحو QR Code الخاص بالرابط المختصر</li>
+                <li>سيظهر الرابط تلقائياً في الحقل الأول</li>
+                <li>أدخل الرابط الجديد الذي تريد التوجه إليه</li>
+                <li>اختر "تعديل" للروابط الموجودة أو "تفعيل" للروابط الجديدة</li>
+            </ol>
+        </div>
+    </div>
+
+    <script src="shared.js"></script>
+    <script src="client.js"></script>
+    <script src="qr-scanner.js"></script>
+</body>
+</html>
