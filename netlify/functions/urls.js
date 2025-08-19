@@ -16,6 +16,10 @@ function generateShortCode(length = 6) {
     }
     return result;
 }
+// التحقق من صحة الكود المختصر
+function isValidShortCode(code) {
+    return /^[a-zA-Z0-9]{3,20}$/.test(code);
+}
 
 // التحقق من صحة الرابط
 function isValidUrl(string) {
@@ -165,36 +169,62 @@ async function handleCreateOrUpdateUrl(data, headers) {
         let finalShortCode = customCode;
 
         // إذا تم تحديد كود مخصص، تحقق من توفره
-        if (customCode) {
+       if (action === 'create') {
+    // التحقق من صحة الرابط
+    if (!isValidUrl(originalUrl)) {
+        return {
+            statusCode: 400,
+            headers,
+            body: JSON.stringify({ error: 'رابط غير صحيح' })
+        };
+    }
+
+    let finalShortCode = customCode;
+
+    // إذا تم تحديد كود مخصص، تحقق من صحته
+    if (customCode) {
+        // التحقق من صحة الكود المخصص
+        if (!isValidShortCode(customCode)) {
+            return {
+                statusCode: 400,
+                headers,
+                body: JSON.stringify({ 
+                    error: 'الكود المخصص يجب أن يحتوي على 3-20 حرف/رقم فقط' 
+                })
+            };
+        }
+
+        // التحقق من توفر الكود المخصص
+        const { data: existing } = await supabase
+            .from('urls')
+            .select('id')
+            .eq('short_code', customCode)
+            .single();
+
+        if (existing) {
+            return {
+                statusCode: 400,
+                headers,
+                body: JSON.stringify({ 
+                    error: 'هذا رابط موجود، جرب طريقة التعديل',
+                    suggestion: 'edit'
+                })
+            };
+        }
+    } else {
+        // توليد كود عشوائي
+        do {
+            finalShortCode = generateShortCode();
             const { data: existing } = await supabase
                 .from('urls')
                 .select('id')
-                .eq('short_code', customCode)
+                .eq('short_code', finalShortCode)
                 .single();
+            
+            if (!existing) break;
+        } while (true);
+    }
 
-            if (existing) {
-                return {
-                    statusCode: 400,
-                    headers,
-                    body: JSON.stringify({ 
-                        error: 'هذا رابط موجود، جرب طريقة التعديل',
-                        suggestion: 'edit'
-                    })
-                };
-            }
-        } else {
-            // توليد كود عشوائي
-            do {
-                finalShortCode = generateShortCode();
-                const { data: existing } = await supabase
-                    .from('urls')
-                    .select('id')
-                    .eq('short_code', finalShortCode)
-                    .single();
-                
-                if (!existing) break;
-            } while (true);
-        }
 
         // إنشاء الرابط الجديد
         const { data: newUrlData, error } = await supabase
@@ -443,4 +473,6 @@ function getBaseUrl(headers) {
     const host = headers.host || headers.Host || 'localhost:3000';
     const protocol = headers['x-forwarded-proto'] || 'https';
     return `${protocol}://${host}`;
+}
+
 }

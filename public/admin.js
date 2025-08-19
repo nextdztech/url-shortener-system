@@ -66,21 +66,29 @@ class AdminPanel {
 
     // إنشاء رابط جديد
     async handleCreateUrl(event) {
-        event.preventDefault();
-        
-        const originalUrl = document.getElementById('original-url').value.trim();
-        const customCode = document.getElementById('custom-code').value.trim();
-        
-        if (!originalUrl) {
-            AlertSystem.error('يرجى إدخال رابط صحيح');
+    event.preventDefault();
+    
+    const originalUrl = document.getElementById('original-url').value.trim();
+    const customCode = document.getElementById('custom-code').value.trim();
+    
+    if (!originalUrl) {
+        AlertSystem.error('يرجى إدخال رابط صحيح');
+        return;
+    }
+
+    if (!Utils.isValidUrl(originalUrl)) {
+        AlertSystem.error('الرابط غير صحيح');
+        return;
+    }
+
+    // التحقق من الكود المخصص إذا تم إدخاله
+    if (customCode) {
+        const validation = Utils.validateAndCleanShortCode(customCode);
+        if (!validation.isValid) {
+            AlertSystem.error(validation.error);
             return;
         }
-
-        if (!Utils.isValidUrl(originalUrl)) {
-            AlertSystem.error('الرابط غير صحيح');
-            return;
-        }
-
+    }
         try {
             const submitBtn = event.target.querySelector('button[type="submit"]');
             const originalText = submitBtn.textContent;

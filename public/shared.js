@@ -1,4 +1,3 @@
-
 // إعدادات عامة
 const CONFIG = {
     API_BASE: '/api',
@@ -106,6 +105,36 @@ const Utils = {
     // توليد معرف عميل فريد
     generateClientId() {
         return 'client_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    },
+
+    // التحقق من صحة الكود المختصر
+    isValidShortCode(code) {
+        // يقبل من 3 إلى 20 حرف، أحرف إنجليزية وأرقام فقط
+        return /^[a-zA-Z0-9]{3,20}$/.test(code);
+    },
+
+    // تنظيف وتحقق من الكود المدخل
+    validateAndCleanShortCode(code) {
+        if (!code) return { isValid: false, error: 'الكود مطلوب' };
+        
+        // إزالة المسافات
+        code = code.trim();
+        
+        // التحقق من الطول
+        if (code.length < 3) {
+            return { isValid: false, error: 'الكود يجب أن يكون 3 أحرف على الأقل' };
+        }
+        
+        if (code.length > 20) {
+            return { isValid: false, error: 'الكود يجب ألا يزيد عن 20 حرف' };
+        }
+        
+        // التحقق من الأحرف المسموحة
+        if (!/^[a-zA-Z0-9]+$/.test(code)) {
+            return { isValid: false, error: 'الكود يجب أن يحتوي على أحرف إنجليزية وأرقام فقط' };
+        }
+        
+        return { isValid: true, code: code };
     },
 
     // الحصول على معرف العميل من التخزين المحلي
