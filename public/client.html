@@ -40,15 +40,7 @@
                         🛑 إيقاف المسح
                     </button>
                 </div>
-<div class="scanner-info">
-    <h4>💡 نصائح للمسح الناجح:</h4>
-    <ul>
-        <li>تأكد من وجود إضاءة جيدة</li>
-        <li>اقترب من QR Code (15-30 سم)</li>  
-        <li>حافظ على ثبات الكاميرا</li>
-        <li>تأكد أن QR Code واضح في الإطار</li>
-    </ul>
-</div>
+
 
 
                 <div id="scanner-container" style="display: none;">
@@ -58,12 +50,14 @@
                     </div>
                 </div>
 
+                 <!-- 
                 <div class="manual-input">
                     <label>أو أدخل الرابط المختصر يدوياً:</label>
                     <div class="input-with-button">
                         <input type="url" id="manual-url" placeholder="https://yoursite.com/abc123">
                         <button class="btn btn-secondary" onclick="loadManualUrl()">📥 تحميل</button>
                     </div>
+                     -->
                 </div>
             </div>
 
@@ -71,12 +65,12 @@
             <div class="action-section">
                 <form id="client-form">
                     <div class="form-group">
-                        <label for="scanned-url">🔗 الرابط المختصر المكتشف:</label>
+                        <label for="scanned-url">🔗 الرابط المختصر :</label>
                         <input type="text" id="scanned-url" readonly placeholder="سيظهر هنا بعد المسح...">
                     </div>
 
                     <div class="form-group">
-                        <label for="target-url">🎯 الرابط الهدف الجديد:</label>
+                        <label for="target-url">🎯 الرابط الجديد:</label>
                         <input type="url" id="target-url" placeholder="https://example.com/new-destination" required>
                         <small>أدخل الرابط الذي تريد التوجه إليه</small>
                     </div>
@@ -108,6 +102,15 @@
 
         <!-- معلومات إضافية -->
         <div class="info-section">
+            <div class="scanner-info">
+    <h4>💡 نصائح للمسح الناجح:</h4>
+    <ul>
+        <li>تأكد من وجود إضاءة جيدة</li>
+        <li>اقترب من QR Code (15-30 سم)</li>  
+        <li>حافظ على ثبات الكاميرا</li>
+        <li>تأكد أن QR Code واضح في الإطار</li>
+    </ul>
+</div>
             <h3>💡 كيفية الاستخدام:</h3>
             <ol>
                 <li>اضغط "بدء المسح" لتفعيل الكاميرا</li>
