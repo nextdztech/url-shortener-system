@@ -1,0 +1,12 @@
+# إعادة توجيه الروابط المختصرة
+/:shortcode  /.netlify/functions/redirect?code=:shortcode  200
+
+# إعادة توجيه API
+/api/*  /.netlify/functions/:splat  200
+
+# إعادة توجيه الصفحات
+/admin  /admin.html  200
+/client  /client.html  200
+
+# الصفحة الافتراضية للروابط غير الموجودة
+/*  /index.html  404

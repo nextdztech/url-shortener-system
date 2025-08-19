@@ -5,17 +5,4 @@
 [build.environment]
   NODE_VERSION = "18"
 
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-
-[[redirects]]
-  from = "/admin"
-  to = "/admin.html"
-  status = 200
-
-[[redirects]]
-  from = "/client"
-  to = "/client.html"
-  status = 200
+# لا نحتاج redirects هنا لأننا نستخدم _redirects
