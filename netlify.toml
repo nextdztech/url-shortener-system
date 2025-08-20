@@ -6,3 +6,39 @@
   NODE_VERSION = "18"
 
 # لا نحتاج redirects هنا لأننا نستخدم _redirects
+[build]
+  functions = "netlify/functions"
+  publish = "public"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+[[redirects]]
+  from = "/api/stats"
+  to = "/.netlify/functions/stats"
+  status = 200
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+
+[[redirects]]
+  from = "/client"
+  to = "/client.html"
+  status = 200
+
+[[redirects]]
+  from = "/:shortcode"
+  to = "/.netlify/functions/redirect?code=:shortcode"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 404

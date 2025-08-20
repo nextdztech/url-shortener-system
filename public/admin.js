@@ -209,44 +209,33 @@ class AdminPanel {
         container.innerHTML = paginationHTML;
     }
 
-    // تحميل الإحصائيات
-    async loadStats() {
-        try {
-            const data = await URLShortenerAPI.getUrls({
-                userType: 'admin',
-                page: 1,
-                limit: 1000 // لحساب الإحصائيات الكاملة
-            });
+// تحميل الإحصائيات محسن
+async loadStats() {
+    try {
+        // استخدام endpoint مخصص للإحصائيات
+        const response = await fetch('/api/stats');
+        const result = await response.json();
 
-            const urls = data.data.urls;
+        if (result.success) {
+            const stats = result.data;
             
-            // حساب الإحصائيات
-            const totalUrls = urls.length;
-            const totalClicks = urls.reduce((sum, url) => sum + (url.clickCount || 0), 0);
-            const todayUrls = urls.filter(url => {
-                const urlDate = new Date(url.createdAt);
-                const today = new Date();
-                return urlDate.toDateString() === today.toDateString();
-            }).length;
-            const avgClicks = totalUrls > 0 ? Math.round(totalClicks / totalUrls) : 0;
-
             // عرض الإحصائيات
-            document.getElementById('total-urls').textContent = totalUrls;
-            document.getElementById('total-clicks').textContent = Utils.formatClicks(totalClicks);
-            document.getElementById('today-urls').textContent = todayUrls;
-            document.getElementById('avg-clicks').textContent = avgClicks;
+            document.getElementById('total-urls').textContent = stats.totalUrls;
+            document.getElementById('total-clicks').textContent = Utils.formatClicks(stats.totalClicks);
+            document.getElementById('today-urls').textContent = stats.todayUrls;
+            document.getElementById('avg-clicks').textContent = stats.avgClicks;
 
             // عرض أكثر الروابط نقراً
-            const topUrls = urls
-                .sort((a, b) => (b.clickCount || 0) - (a.clickCount || 0))
-                .slice(0, 5);
-
-            this.renderTopUrls(topUrls);
-
-        } catch (error) {
-            AlertSystem.error('فشل في تحميل الإحصائيات');
+            this.renderTopUrls(stats.topUrls);
+        } else {
+            throw new Error(result.error || 'فشل في تحميل الإحصائيات');
         }
+
+    } catch (error) {
+        console.error('Stats error:', error);
+        AlertSystem.error('فشل في تحميل الإحصائيات: ' + error.message);
     }
+}
 
     // عرض أكثر الروابط نقراً
     renderTopUrls(urls) {
