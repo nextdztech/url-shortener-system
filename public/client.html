@@ -125,5 +125,55 @@
     <script src="shared.js"></script>
     <script src="client.js"></script>
     <script src="qr-scanner.js"></script>
+
+
+    
+<div id="debug-info" style="
+    position: fixed; 
+    bottom: 10px; 
+    right: 10px; 
+    background: rgba(0,0,0,0.8); 
+    color: white; 
+    padding: 10px; 
+    border-radius: 5px; 
+    font-size: 12px;
+    max-width: 300px;
+    display: none;
+">
+    <div id="debug-content"></div>
+    <button onclick="document.getElementById('debug-info').style.display='none'" style="
+        background: #dc3545; 
+        color: white; 
+        border: none; 
+        padding: 3px 8px; 
+        border-radius: 3px; 
+        cursor: pointer;
+        margin-top: 5px;
+    ">إخفاء</button>
+</div>
+
+<script>
+// إظهار تشخيص للمطور
+function showDebugInfo(message) {
+    const debugDiv = document.getElementById('debug-info');
+    const debugContent = document.getElementById('debug-content');
+    
+    if (debugDiv && debugContent) {
+        debugContent.innerHTML = message;
+        debugDiv.style.display = 'block';
+        
+        // إخفاء تلقائي بعد 10 ثواني
+        setTimeout(() => {
+            debugDiv.style.display = 'none';
+        }, 10000);
+    }
+}
+
+// تسجيل مفصل لتشخيص المشكلة
+window.addEventListener('error', function(e) {
+    console.error('💥 Global error:', e);
+});
+</script>
+
 </body>
 </html>

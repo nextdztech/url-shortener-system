@@ -281,56 +281,41 @@ class ClientPanel {
 
     // تعيين الرابط الممسوح
     setScannedUrl(shortCode) {
-        console.log('🎯 Setting scanned URL with code:', shortCode);
-        
-        // التنظيف والتحقق
-        shortCode = shortCode.trim();
-        
-        if (!shortCode) {
-            AlertSystem.error('كود فارغ!');
-            return;
-        }
-
-        // التحقق من صحة الكود
-        if (!/^[a-zA-Z0-9]{3,20}$/.test(shortCode)) {
-            AlertSystem.error(`كود غير صحيح: ${shortCode}`);
-            return;
-        }
-
-        // تخزين الكود
-        this.scannedUrl = shortCode;
-        
-        // إنشاء الرابط الكامل للعرض
-        const fullUrl = `${window.location.origin}/${shortCode}`;
-        
-        // تعيين القيم في الحقول
-        const scannedUrlField = document.getElementById('scanned-url');
-        const manualUrlField = document.getElementById('manual-url');
-        
-        if (scannedUrlField) {
-            scannedUrlField.value = fullUrl;
-            console.log('✅ Set scanned-url field to:', fullUrl);
-        }
-        
-        if (manualUrlField) {
-            manualUrlField.value = fullUrl;
-            console.log('✅ Set manual-url field to:', fullUrl);
-        }
-        
-        // تمييز الحقول بلون أخضر لإظهار نجاح العملية
-        if (scannedUrlField) {
-            scannedUrlField.style.borderColor = '#28a745';
-            scannedUrlField.style.backgroundColor = '#e8f5e8';
-        }
-        
-        AlertSystem.success(`تم التعرف على الرابط: ${shortCode}`);
-        
-        console.log('📝 Scanned URL set successfully:', {
-            shortCode: shortCode,
-            fullUrl: fullUrl,
-            storedCode: this.scannedUrl
-        });
+    console.log('🎯 Setting scanned code:', shortCode);
+    
+    // تنظيف الكود
+    shortCode = shortCode.trim();
+    
+    // التحقق الأساسي
+    if (!shortCode || !/^[a-zA-Z0-9]{3,20}$/.test(shortCode)) {
+        AlertSystem.error(`كود غير صحيح: "${shortCode}"`);
+        return;
     }
+
+    // حفظ الكود
+    this.scannedUrl = shortCode;
+    
+    // إنشاء الرابط الكامل
+    const fullUrl = `${window.location.origin}/${shortCode}`;
+    
+    // تعيين في الحقول
+    const scannedField = document.getElementById('scanned-url');
+    const manualField = document.getElementById('manual-url');
+    
+    if (scannedField) {
+        scannedField.value = fullUrl;
+        scannedField.style.borderColor = '#28a745';
+        scannedField.style.backgroundColor = '#e8f5e8';
+        console.log('✅ Set scanned field:', fullUrl);
+    }
+    
+    if (manualField) {
+        manualField.value = fullUrl;
+        console.log('✅ Set manual field:', fullUrl);
+    }
+    
+    AlertSystem.success(`رابط جاهز: ${shortCode}`);
+}
 
     // معالجة الرابط اليدوي - محسن
     handleManualUrl(url) {
