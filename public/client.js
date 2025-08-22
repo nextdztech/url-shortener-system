@@ -146,12 +146,12 @@ class ClientPanel {
             const shortCode = pathname.substring(1); // إزالة الشرطة المائلة
             
             // التحقق من أن الكود صحيح (أحرف وأرقام فقط)
-            if (/^[a-zA-Z0-9]+$/.test(shortCode) && shortCode.length >= 4 && shortCode.length <= 10) {
+            if (/^[a-zA-Z0-9]+$/.test(shortCode) && shortCode.length >= 3 && shortCode.length <= 20) {
                 return shortCode;
             }
         } catch (e) {
             // إذا لم يكن رابطاً صحيحاً، قد يكون مجرد كود
-            if (/^[a-zA-Z0-9]+$/.test(url) && url.length >= 4 && url.length <= 10) {
+            if (/^[a-zA-Z0-9]+$/.test(url) && url.length >= 3 && url.length <= 20) {
                 return url;
             }
         }
