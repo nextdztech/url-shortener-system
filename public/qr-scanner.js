@@ -187,7 +187,7 @@ class QRScanner {
             }
             
             // محاولة استخراج الكود من نص عادي
-            const codeMatch = qrData.match(/([a-zA-Z0-9]{4,10})/);
+            const codeMatch = qrData.match(/([a-zA-Z0-9]{3,20})/);
             if (codeMatch && this.isValidShortCode(codeMatch[1])) {
                 return codeMatch[1];
             }
@@ -202,7 +202,7 @@ class QRScanner {
 
     // التحقق من صحة الكود المختصر
     isValidShortCode(code) {
-        return /^[a-zA-Z0-9]{4,10}$/.test(code);
+        return /^[a-zA-Z0-9]{3,20}$/.test(code);
     }
 }
 
