@@ -156,7 +156,7 @@ class QRScanner {
     // استخراج الكود المختصر من بيانات QR
     extractShortCodeFromQR(qrData) {
         try {
-            console.log('Extracting from QR data:', qrData);
+            console.log('🔍 QR Data received:', qrData);
             
             // تنظيف البيانات
             qrData = qrData.trim();
@@ -164,39 +164,107 @@ class QRScanner {
             // إذا كان QR يحتوي على رابط كامل
             if (qrData.includes('://')) {
                 try {
+                    console.log('📡 Processing as URL:', qrData);
                     const url = new URL(qrData);
                     let pathname = url.pathname;
+                    
+                    console.log('🛤️ URL pathname:', pathname);
                     
                     // إزالة الشرطة المائلة الأولى
                     if (pathname.startsWith('/')) {
                         pathname = pathname.substring(1);
                     }
                     
+                    console.log('✂️ Cleaned pathname:', pathname);
+                    
                     // التحقق من صحة الكود
                     if (this.isValidShortCode(pathname)) {
+                        console.log('✅ Valid short code found:', pathname);
                         return pathname;
+                    } else {
+                        console.log('❌ Invalid short code format:', pathname);
                     }
                 } catch (urlError) {
-                    console.error('URL parsing error:', urlError);
+                    console.error('❌ URL parsing error:', urlError);
                 }
             }
             
-            // إذا كان QR يحتوي على الكود فقط
+            // إذا كان QR يحتوي على الكود فقط (بدون رابط كامل)
             if (this.isValidShortCode(qrData)) {
+                console.log('✅ Direct short code found:', qrData);
                 return qrData;
             }
             
-            // محاولة استخراج الكود من نص عادي
-            const codeMatch = qrData.match(/([a-zA-Z0-9]{3,20})/);
-            if (codeMatch && this.isValidShortCode(codeMatch[1])) {
-                return codeMatch[1];
+            // محاولة استخراج الكود من نص عادي - تحسين البحث
+            console.log('🔎 Attempting to extract code from text...');
+            
+            // البحث عن نمط الكود في النص
+            const patterns = [
+                // البحث عن كود بعد / في النهاية
+                /\/([a-zA-Z0-9]{3,20})(?:\?|$|#)/,
+                // البحث عن كود في بداية النص
+                /^([a-zA-Z0-9]{3,20})$/,
+                // البحث عن كود في أي مكان
+                /([a-zA-Z0-9]{3,20})/
+            ];
+            
+            for (let pattern of patterns) {
+                const match = qrData.match(pattern);
+                if (match && match[1] && this.isValidShortCode(match[1])) {
+                    console.log('✅ Pattern matched, code found:', match[1]);
+                    return match[1];
+                }
             }
             
+            console.log('❌ No valid short code found in:', qrData);
             return null;
             
         } catch (error) {
-            console.error('Error extracting short code from QR:', error);
+            console.error('❌ Error extracting short code from QR:', error);
             return null;
+        }
+    }
+
+    // التحقق من صحة الكود المختصر - محدث
+    isValidShortCode(code) {
+        if (!code || typeof code !== 'string') return false;
+        
+        // يقبل من 3 إلى 20 حرف، أحرف إنجليزية وأرقام فقط
+        const isValid = /^[a-zA-Z0-9]{3,20}$/.test(code);
+        console.log(`🔍 Validating code "${code}": ${isValid}`);
+        return isValid;
+    }
+
+    // معالجة QR Code المكتشف - محسن
+    handleQRDetected(qrData) {
+        console.log('🎯 QR Code detected:', qrData);
+        this.stopScanner();
+
+        // استخراج الكود المختصر من QR
+        const shortCode = this.extractShortCodeFromQR(qrData);
+        
+        if (shortCode) {
+            console.log('✅ Successfully extracted short code:', shortCode);
+            
+            // تعيين الرابط في واجهة العميل
+            if (window.clientPanel) {
+                window.clientPanel.setScannedUrl(shortCode);
+            }
+            
+            AlertSystem.success(`تم التعرف على QR Code بنجاح! الكود: ${shortCode}`);
+            
+            // إضافة اهتزاز إذا كان مدعوماً
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200]);
+            }
+        } else {
+            console.log('❌ Failed to extract valid short code from:', qrData);
+            AlertSystem.error(`QR Code لا يحتوي على كود صحيح. البيانات: ${qrData.substring(0, 50)}...`);
+            
+            // إظهار المزيد من التفاصيل للمطور
+            if (qrData.length > 100) {
+                console.log('📄 Full QR data:', qrData);
+            }
         }
     }
 

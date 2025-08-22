@@ -281,12 +281,117 @@ class ClientPanel {
 
     // تعيين الرابط الممسوح
     setScannedUrl(shortCode) {
+        console.log('🎯 Setting scanned URL with code:', shortCode);
+        
+        // التنظيف والتحقق
+        shortCode = shortCode.trim();
+        
+        if (!shortCode) {
+            AlertSystem.error('كود فارغ!');
+            return;
+        }
+
+        // التحقق من صحة الكود
+        if (!/^[a-zA-Z0-9]{3,20}$/.test(shortCode)) {
+            AlertSystem.error(`كود غير صحيح: ${shortCode}`);
+            return;
+        }
+
+        // تخزين الكود
         this.scannedUrl = shortCode;
+        
+        // إنشاء الرابط الكامل للعرض
         const fullUrl = `${window.location.origin}/${shortCode}`;
-        document.getElementById('scanned-url').value = fullUrl;
-        document.getElementById('manual-url').value = fullUrl;
-        AlertSystem.success('تم التعرف على الرابط المختصر!');
+        
+        // تعيين القيم في الحقول
+        const scannedUrlField = document.getElementById('scanned-url');
+        const manualUrlField = document.getElementById('manual-url');
+        
+        if (scannedUrlField) {
+            scannedUrlField.value = fullUrl;
+            console.log('✅ Set scanned-url field to:', fullUrl);
+        }
+        
+        if (manualUrlField) {
+            manualUrlField.value = fullUrl;
+            console.log('✅ Set manual-url field to:', fullUrl);
+        }
+        
+        // تمييز الحقول بلون أخضر لإظهار نجاح العملية
+        if (scannedUrlField) {
+            scannedUrlField.style.borderColor = '#28a745';
+            scannedUrlField.style.backgroundColor = '#e8f5e8';
+        }
+        
+        AlertSystem.success(`تم التعرف على الرابط: ${shortCode}`);
+        
+        console.log('📝 Scanned URL set successfully:', {
+            shortCode: shortCode,
+            fullUrl: fullUrl,
+            storedCode: this.scannedUrl
+        });
     }
+
+    // معالجة الرابط اليدوي - محسن
+    handleManualUrl(url) {
+        console.log('✋ Manual URL input:', url);
+        
+        if (!url) return;
+
+        // استخراج الكود المختصر من الرابط
+        const shortCode = this.extractShortCode(url);
+        if (shortCode) {
+            this.setScannedUrl(shortCode);
+        } else {
+            AlertSystem.error('الرابط المدخل لا يحتوي على كود صحيح');
+        }
+    }
+
+    // استخراج الكود المختصر من الرابط - محسن
+    extractShortCode(url) {
+        try {
+            console.log('🔍 Extracting short code from URL:', url);
+            
+            url = url.trim();
+            
+            // إذا كان رابط كامل
+            if (url.includes('://')) {
+                try {
+                    const urlObj = new URL(url);
+                    let pathname = urlObj.pathname;
+                    
+                    // إزالة الشرطة المائلة
+                    if (pathname.startsWith('/')) {
+                        pathname = pathname.substring(1);
+                    }
+                    
+                    console.log('🛤️ Extracted pathname:', pathname);
+                    
+                    // التحقق من صحة الكود
+                    if (/^[a-zA-Z0-9]{3,20}$/.test(pathname)) {
+                        console.log('✅ Valid short code extracted:', pathname);
+                        return pathname;
+                    }
+                } catch (e) {
+                    console.error('❌ URL parsing error:', e);
+                }
+            }
+            
+            // إذا كان مجرد كود
+            if (/^[a-zA-Z0-9]{3,20}$/.test(url)) {
+                console.log('✅ Direct short code:', url);
+                return url;
+            }
+            
+            console.log('❌ No valid short code found in:', url);
+            return null;
+            
+        } catch (error) {
+            console.error('❌ Error extracting short code:', error);
+            return null;
+        }
+    }
+
 }
 
 // تحميل رابط يدوي
