@@ -2,7 +2,7 @@
 class AdminPanel {
     constructor() {
         this.currentPage = 1;
-        this.urlsPerPage = 10;
+        this.urlsPerPage = 20;
         this.urls = [];
         this.stats = {};
         this.init();

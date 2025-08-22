@@ -48,7 +48,7 @@ async function checkRateLimit(clientId) {
         return true; // السماح في حالة الخطأ
     }
 
-    return (attempts?.length || 0) < 10;
+    return (attempts?.length || 0) < 20;
 }
 
 // تسجيل محاولة عميل
